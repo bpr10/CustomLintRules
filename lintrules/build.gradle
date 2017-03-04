@@ -1,0 +1,55 @@
+apply plugin: 'java'
+
+dependencies {
+  compile 'com.android.tools.lint:lint-api:25.2.3'
+  compile 'com.android.tools.lint:lint-checks:25.2.3'
+  testCompile 'junit:junit:4.11'
+  testCompile 'com.android.tools.lint:lint:25.2.3'
+  testCompile 'com.android.tools.lint:lint-tests:25.2.3'
+  testCompile 'com.android.tools:testutils:25.2.3'
+}
+
+jar {
+  baseName 'bpr10.git.lintrules'
+  version '1.0'
+
+  manifest {
+    attributes 'Manifest-Version': 1.0
+    attributes 'Lint-Registry': 'bpr10.git.lintrules.CustomIssueRegistry'
+
+  }
+}
+defaultTasks 'assemble'
+
+
+configurations {
+  lintChecks
+}
+
+dependencies {
+  lintChecks files(jar)
+}
+
+task install(type: Copy) {
+  from configurations.lintChecks
+  into System.getProperty('user.home') + '/.android/lint/'
+}
+
+apply plugin: 'java'
+
+repositories {
+  jcenter()
+  maven {
+    url  "http://dl.bintray.com/android/android-tools"
+  }
+}
+
+
+jar {
+  manifest {
+    attributes("Lint-Registry": "com.example.google.lint.MyIssueRegistry")
+  }
+}
+
+defaultTasks 'assemble'
+
